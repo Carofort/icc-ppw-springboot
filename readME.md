@@ -46,6 +46,8 @@ La función principal es crear un Backend más sencillo sin necesidad de instala
 
 # Práctica 5 (Spring Boot): Persistencia real con PostgreSQL, Entidades JPA y Repositorios
 
+## Evidencias:
+
 #### 1.- Aplicación Docker Desktop:
 
 ![Software de Docker funcionando](assets/05-docker.png)
@@ -53,3 +55,33 @@ La función principal es crear un Backend más sencillo sin necesidad de instala
 #### 2.- Verificación en PostgreSQL:
 
 ![Comando para visualizar al usuario](assets/05-confirmacion.png)
+
+### Creación de clases en ```\products```:
+
+## Evidencias:
+
+#### 1.- Visualización de los 5 productos:
+
+![5 Productos](assets/05-productos.png)
+
+**Descripción:** Se insertaron (PUT) 5 registros de productos a través de BRUNO.
+
+#### 2.- Verificación en PostgreSQL:
+
+![Producto en específico](assets/05-producto-especifico.png)
+
+
+#### 3.- Verificación en PostgreSQL:
+
+![Comando para visualizar los productos](assets/05-lista-productos.png)
+
+
+#### 4.- Explicar el flujo:
+
+**Desde API REST hacia PostgreSQL:**
+
+- El cliente realiza una petición HTTP enviando un JSON, el ProductsController recibe un objeto de transferencia de datos (CreateProductDto). Este DTO se pasa al ProductServiceImpl, cual utiliza el componente ProductMapper para convertir los datos de entrada al ProductModel y luego a ProductEntity. El servicio invoca al método ```.save()``` de ProductRepository, lo que hace que Hibernate traduzca la entidad en una sentencia SQL INSERT que se ejecuta en el contenedor de PostgreSQL. Durante este guardado, los interceptores de la clase abstracta BaseEntity (como ```@PrePersist```) se encargan de asignar automáticamente los valores de auditoría, como la fecha de creación en createdAt y el estado lógico de eliminación.
+
+**De PostgreSQL hacia la API REST:**
+
+- Tras la inserción, PostgreSQL genera el IDENTITY. Hibernate mapea este registro resultante de vuelta a un objeto ProductEntity. El flujo regresa a la capa de servicio, donde se vuelve a pasar por el ProductMapper para transformar la entidad en un ProductResponseDto. Este DTO final es el que retorna el controlador al cliente en formato JSON, consumiendo las propiedades internas de la base de datos y mostrando solo la información requerida.
