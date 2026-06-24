@@ -15,7 +15,7 @@ import jakarta.persistence.Table;
 @Table(name = "users")
 public class UserEntity extends BaseEntity {
 
-    @Column(nullable = false, length = 150)
+     @Column(nullable = false, length = 150)
     private String name;
 
     @Column(nullable = false, unique = true, length = 150)

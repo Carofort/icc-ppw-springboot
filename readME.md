@@ -85,3 +85,16 @@ La función principal es crear un Backend más sencillo sin necesidad de instala
 **De PostgreSQL hacia la API REST:**
 
 - Tras la inserción, PostgreSQL genera el IDENTITY. Hibernate mapea este registro resultante de vuelta a un objeto ProductEntity. El flujo regresa a la capa de servicio, donde se vuelve a pasar por el ProductMapper para transformar la entidad en un ProductResponseDto. Este DTO final es el que retorna el controlador al cliente en formato JSON, consumiendo las propiedades internas de la base de datos y mostrando solo la información requerida.
+
+
+# Práctica 6 (Spring Boot): Validación de DTOs y Control de Datos de Entrada
+
+## Evidencias:
+
+#### 1.- Validación POST:
+
+![Validacion POST en Bruno](assets/06-post-invalido.png)
+
+#### 2.- Validación PATCH:
+
+![Validacion PATCH en Bruno](assets/06-patch-invalido.png)

@@ -53,7 +53,13 @@ public class ProductServiceImpl implements ProductService {
     public Object update(Long id, UpdateProductDto dto) {
         ProductEntity existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        
+
+        if (existing.isDeleted()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "No se puede actualizar un producto ya eliminado");
+        }
+
         existing.setName(dto.getName());
         existing.setDescription(dto.getDescription());
         existing.setPrice(dto.getPrice());
@@ -68,10 +74,19 @@ public class ProductServiceImpl implements ProductService {
         ProductEntity existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
 
-        if (dto.getName() != null) existing.setName(dto.getName());
-        if (dto.getDescription() != null) existing.setDescription(dto.getDescription());
-        if (dto.getPrice() != null) existing.setPrice(dto.getPrice());
-        if (dto.getStock() != null) existing.setStock(dto.getStock());
+        if (existing.isDeleted()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "No se puede actualizar un producto ya eliminado");
+        }
+        if (dto.getName() != null)
+            existing.setName(dto.getName());
+        if (dto.getDescription() != null)
+            existing.setDescription(dto.getDescription());
+        if (dto.getPrice() != null)
+            existing.setPrice(dto.getPrice());
+        if (dto.getStock() != null)
+            existing.setStock(dto.getStock());
 
         ProductEntity saved = repository.save(existing);
         return mapper.toResponseDto(mapper.toModel(saved));
@@ -79,9 +94,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
-            throw new RuntimeException("Producto no encontrado");
+        ProductEntity existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        if (existing.isDeleted()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "No se puede eliminar un producto ya eliminado");
         }
-        repository.deleteById(id);
+
+        existing.setDeleted(true);
+
+        repository.save(existing);
     }
 }

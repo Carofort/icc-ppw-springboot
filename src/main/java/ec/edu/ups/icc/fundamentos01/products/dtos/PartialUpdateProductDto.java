@@ -2,15 +2,25 @@ package ec.edu.ups.icc.fundamentos01.products.dtos;
 
 import java.math.BigDecimal;
 
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
+
 /**
  * DTO utilizado para recibir los datos que se desean
  * actualizar parcialmente en un producto existente (PATCH).
  */
 public class PartialUpdateProductDto {
 
+    @Size(min = 3, max = 150, message = "El nombre debe tener entre 3 y 150 caracteres")
     private String name;
+
     private String description;
+
+    @DecimalMin(value = "0.0", message = "El precio mínimo debe ser 0")
     private BigDecimal price;
+
+    @Min(value = 0, message = "El stock mínimo debe ser 0")
     private Integer stock;
 
     public PartialUpdateProductDto() {

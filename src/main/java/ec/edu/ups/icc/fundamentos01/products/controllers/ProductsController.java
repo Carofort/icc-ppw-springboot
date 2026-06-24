@@ -17,6 +17,7 @@ import ec.edu.ups.icc.fundamentos01.products.dtos.PartialUpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
 import ec.edu.ups.icc.fundamentos01.products.services.ProductService;
+import jakarta.validation.Valid;
 
 /*
  * Controlador REST encargado de exponer los endpoints HTTP
@@ -58,7 +59,7 @@ public class ProductsController {
      * POST /products
      */
     @PostMapping
-    public ProductResponseDto create(@RequestBody CreateProductDto dto) {
+    public ProductResponseDto create(@Valid @RequestBody CreateProductDto dto) {
         return service.create(dto);
     }
 
@@ -68,6 +69,7 @@ public class ProductsController {
      */
     @PutMapping("/{id}")
     public Object update(
+            @Valid
             @PathVariable Long id,
             @RequestBody UpdateProductDto dto
     ) {
@@ -80,6 +82,7 @@ public class ProductsController {
      */
     @PatchMapping("/{id}")
     public Object partialUpdate(
+            @Valid
             @PathVariable Long id,
             @RequestBody PartialUpdateProductDto dto
     ) {

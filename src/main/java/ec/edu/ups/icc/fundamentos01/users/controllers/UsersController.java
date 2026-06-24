@@ -17,6 +17,7 @@ import ec.edu.ups.icc.fundamentos01.users.dtos.PartialUpdateUserDto;
 import ec.edu.ups.icc.fundamentos01.users.dtos.UpdateUserDto;
 import ec.edu.ups.icc.fundamentos01.users.dtos.UserResponseDto;
 import ec.edu.ups.icc.fundamentos01.users.services.UserService;
+import jakarta.validation.Valid;
 
 /*
  * Controlador REST encargado de exponer los endpoints HTTP
@@ -73,7 +74,7 @@ public class UsersController {
      * POST /users
      */
     @PostMapping
-    public UserResponseDto create(@RequestBody CreateUserDto dto) {
+    public UserResponseDto create(@Valid @RequestBody CreateUserDto dto) {
         return service.create(dto);
     }
 
@@ -84,6 +85,7 @@ public class UsersController {
      */
     @PutMapping("/{id}")
     public Object update(
+            @Valid
             @PathVariable Long id,
             @RequestBody UpdateUserDto dto
     ) {
@@ -97,6 +99,7 @@ public class UsersController {
      */
     @PatchMapping("/{id}")
     public Object partialUpdate(
+            @Valid
             @PathVariable Long id,
             @RequestBody PartialUpdateUserDto dto
     ) {
