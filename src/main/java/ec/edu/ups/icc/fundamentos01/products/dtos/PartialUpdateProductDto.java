@@ -1,7 +1,5 @@
 package ec.edu.ups.icc.fundamentos01.products.dtos;
 
-import java.math.BigDecimal;
-
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -18,12 +16,22 @@ public class PartialUpdateProductDto {
     private String description;
 
     @DecimalMin(value = "0.0", message = "El precio mínimo debe ser 0")
-    private BigDecimal price;
+    private Double price;
 
     @Min(value = 0, message = "El stock mínimo debe ser 0")
     private Integer stock;
 
+    private Long categoryId;
+
     public PartialUpdateProductDto() {
+    }
+
+    public PartialUpdateProductDto(String name, String description, Double price, Integer stock, Long categoryId) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stock = stock;
+        this.categoryId = categoryId;
     }
 
     // Getters y Setters
@@ -33,9 +41,12 @@ public class PartialUpdateProductDto {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
 
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
+
+    public Long getCategoryId() { return categoryId; }
+    public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
 }

@@ -1,6 +1,5 @@
 package ec.edu.ups.icc.fundamentos01.products.models;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -17,16 +16,18 @@ public class ProductModel {
     
     private String name;
     private String description;
-    private BigDecimal price;
+    private Double price;
     private Integer stock;
     private LocalDateTime createdAt;
+    private Object owner; // Cambiado a Object para evitar dependencias directas
+    private Object category; // Cambiado a Object para evitar dependencias directas
 
     // Constructor vacío
     public ProductModel() {
     }
 
     // Constructor lleno para transformaciones básicas
-    public ProductModel(String name, String description, BigDecimal price, Integer stock) {
+    public ProductModel(String name, String description, Double price, Integer stock) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -34,13 +35,15 @@ public class ProductModel {
     }
 
     // Constructor completo
-    public ProductModel(Long id, String name, String description, BigDecimal price, Integer stock, LocalDateTime createdAt) {
+    public ProductModel(Long id, String name, String description, Double price, Integer stock, LocalDateTime createdAt, Object owner, Object category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.createdAt = createdAt;
+        this.owner = owner;
+        this.category = category;
     }
 
     // Getters y Setters
@@ -68,11 +71,11 @@ public class ProductModel {
         this.description = description; 
     }
 
-    public BigDecimal getPrice() { 
+    public Double getPrice() { 
         return price; 
     }
 
-    public void setPrice(BigDecimal price) { 
+    public void setPrice(Double price) { 
         this.price = price; 
     }
 
@@ -90,5 +93,21 @@ public class ProductModel {
 
     public void setCreatedAt(LocalDateTime createdAt) { 
         this.createdAt = createdAt; 
+    }
+
+    public Object getOwner() { 
+        return owner; 
+    }
+
+    public void setOwner(Object owner) { 
+        this.owner = owner; 
+    }
+
+    public Object getCategory() { 
+        return category; 
+    }
+
+    public void setCategory(Object category) { 
+        this.category = category; 
     }
 }

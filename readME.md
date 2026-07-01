@@ -98,3 +98,30 @@ La función principal es crear un Backend más sencillo sin necesidad de instala
 #### 2.- Validación PATCH:
 
 ![Validacion PATCH en Bruno](assets/06-patch-invalido.png)
+
+
+# Práctica 8 (Spring Boot): Relaciones ManyToOne, Foreign Keys y Consultas Relacionales
+
+## Captura:
+
+#### 1.- Consulta de productos por categoría:
+
+![GET Productos con owner y category](assets/08-getProducts.png)
+
+#### 2.- Responder:
+
+**¿Cómo se relaciona ProductEntity con UserEntity y CategoryEntity usando @ManyToOne y @JoinColumn?**
+
+Estas anotaciones se implementan en la clase ```ProductEntity```:
+
+```java
+@ManyToOne(optional = false, fetch = FetchType.LAZY)
+@JoinColumn(name = "user_id", nullable = false)
+private UserEntity owner;
+```
+
+- ```@ManyToOne``` significa que muchos productos pueden pertenecer a un mismo usuario. Con **optional = false** indicamos que el producto no puede existir con esta relación. También utiliza el fetch type **LAZY** el cual  indica que la entidad relacionada se carga solo cuando se accede a ella.
+
+- ```@JoinColumn(name = "user_id")``` crea la columna de la clave foránea **user_id** en la tabla products. Con **nullable = false** nos aseguramos que este campo sea obligatorio.
+
+En resumen, usando ```@ManyToOne``` y ```@JoinColumn``` cada registro de products almacena las claves foráneas **user_id** y **category_id**, creando la relación entre un producto, su propietario y su categoría, mientras que un mismo usuario o una misma categoría pueden estar asociados a varios productos.
