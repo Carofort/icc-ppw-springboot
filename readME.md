@@ -141,10 +141,47 @@ En resumen, usando ```@ManyToOne``` y ```@JoinColumn``` cada registro de product
 
 #### 3.- Responder:
 
-**¿Por qué se usa ProductService y ProductRepository para consultar productos aunque el endpoint esté dentro del contexto /users/{id}/products o /categories/{id}/products?**
+- **¿Por qué se usa ProductService y ProductRepository para consultar productos aunque el endpoint esté dentro del contexto /users/{id}/products o /categories/{id}/products?**
 
 Porque en sí el recurso que se está utilizando es Productos, no los datos de Usuarios o Categorías. Toda la lógica de negocio recae en las clases de Productos. Con ProductRepository podemos realizar una consulta explícita sin tener que, por ejemplo a través de Usuarios realizar filtrados para llegar a Productos.
 
-**¿Qué cambió al pasar de Product N ── 1 Category a Product N ── N Category?**
+- **¿Qué cambió al pasar de Product N ── 1 Category a Product N ── N Category?**
 
 Su relación pasa a ser ```@ManyToMany```, lo que significa que ambas entidades estan relacionadas entre sí en una tabla a parte, ya no en un atributo dentro de Productos. Ahora las categorías se manejan dentro de una colección.
+
+
+# Práctica 10 (Spring Boot): Paginación de Productos con Page, Slice y Pageable
+
+## Capturas:
+
+#### 1.- Captura de respuesta con Page:
+
+![Consulta empleando page en productos](assets/10-respuesta-page.png)
+
+#### 2.- Captura de respuesta con Slice:
+
+![Consulta empleando slice en productos](assets/10-respuesta-slice.png)
+
+#### 3.- Captura de error por paginación inválida:
+
+![Consulta empleando page en productos pero con filtración inválida](assets/10-respuesta-error.png)
+
+#### 5.- Captura de endpoint de categoría con Page:
+
+![Consulta empleando page en categorias usando endpoint de productos](assets/10-categoria-paginado.png)
+
+#### 6.- Captura de endpoint de categoría con Slice:
+
+![Consulta empleando slice en categorias usando endpoint de productos](assets/10-categoria-slice.png)
+
+#### 7.- Responder:
+
+- **¿Cuál es la diferencia entre Page y Slice?**
+
+Page devuelve una respuesta de paginación más detallada en contarste a Slice. Mientras Page devuelve información como: número total de registros, total de páginas, página actual y su tamaño, Slice solo devuelve los elementos de la página y la información necesaria para saber si existe una página siguiente, sin calcular el total de registros ni el total de páginas. Por eso realiza menos trabajo y suele ser más eficiente cuando solo se necesita navegar secuencialmente.
+
+- **¿Por qué la paginación debe aplicarse en el repositorio y no después de traer todos los datos en memoria?**
+
+Porque la base de datos puede devolver únicamente los registros que se necesitan para la página solicitada utilizando LIMIT y OFFSET. Si primero se cargaran todos los registros en memoria y luego se aplicara la paginación: se consumiría mucha más memoria y aumentaría el tiempo de respuesta.
+
+En resumen, con el buen manejo de paginación, la base de datos filtrará y limitará los resultados antes de enviarlos a la aplicación.

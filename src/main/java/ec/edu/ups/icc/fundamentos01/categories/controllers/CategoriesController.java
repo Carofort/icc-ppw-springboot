@@ -16,10 +16,13 @@ import ec.edu.ups.icc.fundamentos01.categories.dtos.CategoryResponseDto;
 import ec.edu.ups.icc.fundamentos01.categories.dtos.CreateCategoryDto;
 import ec.edu.ups.icc.fundamentos01.categories.dtos.UpdateCategoryDto;
 import ec.edu.ups.icc.fundamentos01.categories.services.CategoryService;
+import ec.edu.ups.icc.fundamentos01.core.dto.PaginationDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductFilterByCategoryDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
 import ec.edu.ups.icc.fundamentos01.products.services.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 
 /*
  * Controlador REST encargado de exponer los endpoints HTTP
@@ -95,6 +98,22 @@ public class CategoriesController {
                 @PathVariable Long id,
                 @Valid @ModelAttribute ProductFilterByCategoryDto filters) {
             return productService.findByCategoryIdWithFilters(id, filters);
+        }
+
+        @GetMapping("/{id}/products/page")
+        public Page<ProductResponseDto> findProductsByCategoryPage(
+                @PathVariable Long id,
+                @Valid @ModelAttribute ProductFilterByCategoryDto filters,
+                @Valid @ModelAttribute PaginationDto pagination) {
+            return productService.findByCategoryIdWithFiltersPage(id, filters, pagination);
+        }
+
+        @GetMapping("/{id}/products/slice")
+        public Slice<ProductResponseDto> findProductsByCategorySlice(
+                @PathVariable Long id,
+                @Valid @ModelAttribute ProductFilterByCategoryDto filters,
+                @Valid @ModelAttribute PaginationDto pagination) {
+            return productService.findByCategoryIdWithFiltersSlice(id, filters, pagination);
         }
     }
 }

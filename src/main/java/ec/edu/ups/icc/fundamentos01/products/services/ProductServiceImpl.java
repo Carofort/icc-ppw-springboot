@@ -4,10 +4,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import ec.edu.ups.icc.fundamentos01.categories.entity.CategoryEntity;
 import ec.edu.ups.icc.fundamentos01.categories.repositories.CategoryRepository;
+import ec.edu.ups.icc.fundamentos01.core.dto.PaginationDto;
 import ec.edu.ups.icc.fundamentos01.core.exceptions.domain.BadRequestException;
 import ec.edu.ups.icc.fundamentos01.core.exceptions.domain.ConflictException;
 import ec.edu.ups.icc.fundamentos01.core.exceptions.domain.NotFoundException;
@@ -90,9 +98,10 @@ public class ProductServiceImpl implements ProductService {
         }
 
         // 2 Encontramos la categoria
-        // El metodo de creación ahora debe que las categorías sean validadas (existan y no estén eliminadas) para poderasociar al producto.
+        // El metodo de creación ahora debe que las categorías sean validadas (existan y
+        // no estén eliminadas) para poderasociar al producto.
         Set<CategoryEntity> categories = validateAndGetCategories(dto.getCategoryIds());
-    
+
         // validadacion de negocio, por ejemplo que no exista un producto con el mismo
         // nombre
         if (productRepository.findByNameIgnoreCaseAndDeletedFalse(dto.getName()).isPresent()) {
@@ -168,7 +177,6 @@ public class ProductServiceImpl implements ProductService {
         Set<CategoryEntity> categories = validateAndGetCategories(dto.getCategoryIds());
 
         entity.setCategories(categories);
-        
 
         ProductEntity savedEntity = productRepository.save(entity);
 
@@ -301,11 +309,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /*
- * Valida que todas las categorías existan y estén activas.
- *
- * Retorna el conjunto de entidades CategoryEntity
- * que se asociarán al producto.
- */
+     * Valida que todas las categorías existan y estén activas.
+     *
+     * Retorna el conjunto de entidades CategoryEntity
+     * que se asociarán al producto.
+     */
     private Set<CategoryEntity> validateAndGetCategories(Set<Long> categoryIds) {
 
         if (categoryIds == null || categoryIds.isEmpty()) {
@@ -343,4 +351,157 @@ public class ProductServiceImpl implements ProductService {
         return name.trim();
     }
 
+    /*
+     * Retorna productos activos usando Page.
+     *
+     * Incluye metadatos completos:
+     * totalElements, totalPages, number, size, first, last.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> findAllPage(PaginationDto pagination) {
+
+        Pageable pageable = createPageable(pagination);
+
+        return productRepository.findActivePage(pageable)
+                .map(ProductMapper::toModel).map(ProductMapper::toResponseDto);
+    }
+
+    /*
+     * Retorna productos activos usando Slice.
+     *
+     * No incluye totalElements ni totalPages.
+     * Es más liviano para navegación secuencial.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Slice<ProductResponseDto> findAllSlice(PaginationDto pagination) {
+
+        Pageable pageable = createPageable(pagination);
+
+        return productRepository.findActiveSlice(pageable)
+                .map(ProductMapper::toModel).map(ProductMapper::toResponseDto);
+    }
+
+    /*
+     * Construye el objeto Pageable validando:
+     * página, tamaño, campo de ordenamiento y dirección.
+     */
+    private Pageable createPageable(PaginationDto pagination) {
+
+        String sortBy = normalizeSortBy(pagination.getSortBy());
+
+        Sort.Direction direction = normalizeDirection(pagination.getDirection());
+
+        Sort sort = Sort.by(direction, sortBy);
+
+        return PageRequest.of(
+                pagination.getPage(),
+                pagination.getSize(),
+                sort);
+    }
+
+    /*
+     * Valida que el campo de ordenamiento exista y esté permitido.
+     *
+     * Se usa lista blanca para evitar ordenar por campos inexistentes
+     * o por relaciones complejas no preparadas para esta práctica.
+     */
+    private String normalizeSortBy(String sortBy) {
+
+        if (sortBy == null || sortBy.isBlank()) {
+            return "id";
+        }
+
+        Set<String> allowedFields = Set.of(
+                "id",
+                "name",
+                "price",
+                "stock",
+                "createdAt",
+                "updatedAt");
+
+        if (!allowedFields.contains(sortBy)) {
+            throw new BadRequestException("Campo de ordenamiento no permitido: " + sortBy);
+        }
+
+        return sortBy;
+    }
+
+    /*
+     * Convierte la dirección recibida por query param
+     * en Sort.Direction.
+     */
+    private Sort.Direction normalizeDirection(String direction) {
+
+        if (direction == null || direction.isBlank()) {
+            return Sort.Direction.ASC;
+        }
+
+        if (direction.equalsIgnoreCase("asc")) {
+            return Sort.Direction.ASC;
+        }
+
+        if (direction.equalsIgnoreCase("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        throw new BadRequestException("Dirección de ordenamiento no válida: " + direction);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDto> findByCategoryIdWithFiltersPage(
+            Long categoryId,
+            ProductFilterByCategoryDto filters,
+            PaginationDto pagination) {
+
+        if (!categoryRepository.existsByIdAndDeletedFalse(categoryId)) {
+            throw new NotFoundException("Category not found");
+        }
+
+        validateCategoryFilters(filters);
+
+        String name = normalizeName(filters.getName());
+
+        Pageable pageable = createPageable(pagination);
+
+        return productRepository.findByCategoryIdWithFiltersPage(
+                categoryId,
+                name,
+                filters.getMinPrice(),
+                filters.getMaxPrice(),
+                filters.getCategoryId(),
+                pageable)
+                .map(ProductMapper::toModel)
+                .map(ProductMapper::toResponseDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Slice<ProductResponseDto> findByCategoryIdWithFiltersSlice(
+            Long categoryId,
+            ProductFilterByCategoryDto filters,
+            PaginationDto pagination) {
+
+        if (!categoryRepository.existsByIdAndDeletedFalse(categoryId)) {
+            throw new NotFoundException("Category not found");
+        }
+
+        validateCategoryFilters(filters);
+
+        String name = normalizeName(filters.getName());
+
+        Pageable pageable = createPageable(pagination);
+
+        return productRepository.findByCategoryIdWithFiltersSlice(
+                categoryId,
+                name,
+                filters.getMinPrice(),
+                filters.getMaxPrice(),
+                filters.getCategoryId(),
+                pageable)
+                .map(ProductMapper::toModel)
+                .map(ProductMapper::toResponseDto);
+    }
 }

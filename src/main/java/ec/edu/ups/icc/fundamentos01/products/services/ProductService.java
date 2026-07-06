@@ -1,12 +1,17 @@
 package ec.edu.ups.icc.fundamentos01.products.services;
 
 import java.util.List;
+
+import org.springframework.data.domain.Slice;
+
+import ec.edu.ups.icc.fundamentos01.core.dto.PaginationDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.CreateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.PartialUpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductFilterByCategoryDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductFilterByUserDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.UpdateProductDto;
 import ec.edu.ups.icc.fundamentos01.products.dtos.ProductResponseDto;
+import org.springframework.data.domain.Page;
 
 public interface ProductService {
 
@@ -32,4 +37,23 @@ public interface ProductService {
                         Long categoryId,
                         ProductFilterByCategoryDto filters);
 
+        /*
+         * Retorna productos activos usando Page.
+         */
+        Page<ProductResponseDto> findAllPage(PaginationDto pagination);
+
+        /*
+         * Retorna productos activos usando Slice.
+         */
+        Slice<ProductResponseDto> findAllSlice(PaginationDto pagination);
+
+        Page<ProductResponseDto> findByCategoryIdWithFiltersPage(
+                        Long categoryId,
+                        ProductFilterByCategoryDto filters,
+                        PaginationDto pagination);
+
+        Slice<ProductResponseDto> findByCategoryIdWithFiltersSlice(
+                        Long categoryId,
+                        ProductFilterByCategoryDto filters,
+                        PaginationDto pagination);
 }
