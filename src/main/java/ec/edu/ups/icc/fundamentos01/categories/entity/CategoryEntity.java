@@ -1,14 +1,15 @@
 package ec.edu.ups.icc.fundamentos01.categories.entity;
 
-import org.hibernate.annotations.Audited.Table;
+import jakarta.persistence.Table;
 import ec.edu.ups.icc.fundamentos01.core.entities.BaseEntity;
 import jakarta.persistence.Entity;
 
 @Entity
-@Table
+@Table(name = "categories")
 public class CategoryEntity extends BaseEntity {
     private String name;
     private String description;
+
 
     public CategoryEntity() {
     }

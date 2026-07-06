@@ -1,6 +1,9 @@
 package ec.edu.ups.icc.fundamentos01.products.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import ec.edu.ups.icc.fundamentos01.categories.entity.CategoryEntity;
 
 /**
  * Modelo de dominio del recurso products.
@@ -20,7 +23,7 @@ public class ProductModel {
     private Integer stock;
     private LocalDateTime createdAt;
     private Object owner; // Cambiado a Object para evitar dependencias directas
-    private Object category; // Cambiado a Object para evitar dependencias directas
+    private List<CategoryEntity> categories;
 
     // Constructor vacío
     public ProductModel() {
@@ -35,7 +38,7 @@ public class ProductModel {
     }
 
     // Constructor completo
-    public ProductModel(Long id, String name, String description, Double price, Integer stock, LocalDateTime createdAt, Object owner, Object category) {
+    public ProductModel(Long id, String name, String description, Double price, Integer stock, LocalDateTime createdAt, Object owner, List<CategoryEntity> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,7 +46,7 @@ public class ProductModel {
         this.stock = stock;
         this.createdAt = createdAt;
         this.owner = owner;
-        this.category = category;
+        this.categories = categories;
     }
 
     // Getters y Setters
@@ -103,11 +106,11 @@ public class ProductModel {
         this.owner = owner; 
     }
 
-    public Object getCategory() { 
-        return category; 
+    public List<CategoryEntity> getCategories() { 
+        return categories; 
     }
 
-    public void setCategory(Object category) { 
-        this.category = category; 
+    public void setCategories(List<CategoryEntity> categories) { 
+        this.categories = categories; 
     }
 }

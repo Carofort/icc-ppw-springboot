@@ -1,5 +1,7 @@
 package ec.edu.ups.icc.fundamentos01.products.dtos;
 
+import java.util.Set;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -21,17 +23,17 @@ public class PartialUpdateProductDto {
     @Min(value = 0, message = "El stock mínimo debe ser 0")
     private Integer stock;
 
-    private Long categoryId;
+        private Set<Long> categoryIds;
 
     public PartialUpdateProductDto() {
     }
 
-    public PartialUpdateProductDto(String name, String description, Double price, Integer stock, Long categoryId) {
+    public PartialUpdateProductDto(String name, String description, Double price, Integer stock, Set<Long> categoryIds) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
-        this.categoryId = categoryId;
+        this.categoryIds = categoryIds;
     }
 
     // Getters y Setters
@@ -47,6 +49,6 @@ public class PartialUpdateProductDto {
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
 
-    public Long getCategoryId() { return categoryId; }
-    public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
+    public Set<Long> getCategoryIds() { return categoryIds; }
+    public void setCategoryIds(Set<Long> categoryIds) { this.categoryIds = categoryIds; }
 }

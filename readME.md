@@ -125,3 +125,26 @@ private UserEntity owner;
 - ```@JoinColumn(name = "user_id")``` crea la columna de la clave foránea **user_id** en la tabla products. Con **nullable = false** nos aseguramos que este campo sea obligatorio.
 
 En resumen, usando ```@ManyToOne``` y ```@JoinColumn``` cada registro de products almacena las claves foráneas **user_id** y **category_id**, creando la relación entre un producto, su propietario y su categoría, mientras que un mismo usuario o una misma categoría pueden estar asociados a varios productos.
+
+
+# Práctica 9 (Spring Boot): Request Parameters, Consultas Relacionadas y Filtrado con JPA
+
+## Capturas:
+
+#### 1.- Consulta con filtros por usuario:
+
+![Consulta filtrada desde el usuario a productos](assets/09-consulta-user.png)
+
+#### 2.- Consulta con filtros por precios:
+
+![Consulta filtrada por precios ](assets/09-consulta-precio.png)
+
+#### 3.- Responder:
+
+**¿Por qué se usa ProductService y ProductRepository para consultar productos aunque el endpoint esté dentro del contexto /users/{id}/products o /categories/{id}/products?**
+
+Porque en sí el recurso que se está utilizando es Productos, no los datos de Usuarios o Categorías. Toda la lógica de negocio recae en las clases de Productos. Con ProductRepository podemos realizar una consulta explícita sin tener que, por ejemplo a través de Usuarios realizar filtrados para llegar a Productos.
+
+**¿Qué cambió al pasar de Product N ── 1 Category a Product N ── N Category?**
+
+Su relación pasa a ser ```@ManyToMany```, lo que significa que ambas entidades estan relacionadas entre sí en una tabla a parte, ya no en un atributo dentro de Productos. Ahora las categorías se manejan dentro de una colección.

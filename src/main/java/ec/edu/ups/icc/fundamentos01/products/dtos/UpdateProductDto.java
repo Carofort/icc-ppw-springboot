@@ -1,8 +1,11 @@
 package ec.edu.ups.icc.fundamentos01.products.dtos;
 
+import java.util.Set;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -26,18 +29,18 @@ public class UpdateProductDto {
     @Min(value = 0, message = "El stock mínimo debe ser 0")
     private Integer stock;
 
-    @NotNull(message = "El ID de la categoría es obligatorio")
-    private Long categoryId;
+    @NotEmpty(message = "Debe seleccionar al menos una categoría")
+    private Set<Long> categoryIds;
 
     public UpdateProductDto() {
     }
 
-    public UpdateProductDto(String name, String description, Double price, Integer stock, Long categoryId) {
+    public UpdateProductDto(String name, String description, Double price, Integer stock, Set<Long> categoryIds) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
-        this.categoryId = categoryId;
+        this.categoryIds = categoryIds;
     }
 
     // Getters y Setters
@@ -53,6 +56,6 @@ public class UpdateProductDto {
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
 
-    public Long getCategoryId() { return categoryId; }
-    public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
+    public Set<Long> getCategoryIds() { return categoryIds; }
+    public void setCategoryIds(Set<Long> categoryIds) { this.categoryIds = categoryIds; }
 }

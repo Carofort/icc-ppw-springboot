@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
 
-    public ProductModel toModel(CreateProductDto dto) {
+    public static ProductModel toModel(CreateProductDto dto) {
 
         if (dto == null)
             return null;
@@ -24,7 +24,7 @@ public class ProductMapper {
                 dto.getStock());
     }
 
-    public ProductEntity toEntity(ProductModel model) {
+    public static ProductEntity toEntity(ProductModel model) {
 
         if (model == null)
             return null;
@@ -42,7 +42,7 @@ public class ProductMapper {
         return entity;
     }
 
-    public ProductModel toModel(ProductEntity entity) {
+    public static ProductModel toModel(ProductEntity entity) {
 
         if (entity == null)
             return null;
@@ -57,12 +57,12 @@ public class ProductMapper {
         model.setCreatedAt(entity.getCreatedAt());
 
         model.setOwner(entity.getOwner());
-        model.setCategory(entity.getCategory());
+        model.setCategories(entity.getCategories().stream().toList());
 
         return model;
     }
 
-    public ProductResponseDto toResponseDto(ProductModel model) {
+    public static ProductResponseDto toResponseDto(ProductModel model) {
 
         if (model == null)
             return null;
@@ -89,17 +89,19 @@ public class ProductMapper {
             dto.setOwner(ownerDto);
         }
 
-        if (model.getCategory() != null) {
+        if (model.getCategories() != null) {
 
-            var category = (ec.edu.ups.icc.fundamentos01.categories.entity.CategoryEntity) model.getCategory();
-
-            CategoryResponseDto categoryDto = new CategoryResponseDto();
-
-            categoryDto.setId(category.getId());
-            categoryDto.setName(category.getName());
-            categoryDto.setDescription(category.getDescription());
-
-            dto.setCategory(categoryDto);
+            dto.setCategories(
+                    model.getCategories()
+                            .stream()
+                            .map(category -> {
+                                CategoryResponseDto categoryDto = new CategoryResponseDto();
+                                categoryDto.setId(category.getId());
+                                categoryDto.setName(category.getName());
+                                categoryDto.setDescription(category.getDescription());
+                                return categoryDto;
+                            })
+                            .toList());
         }
 
         return dto;
