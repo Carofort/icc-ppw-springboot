@@ -185,3 +185,27 @@ Page devuelve una respuesta de paginación más detallada en contarste a Slice. 
 Porque la base de datos puede devolver únicamente los registros que se necesitan para la página solicitada utilizando LIMIT y OFFSET. Si primero se cargaran todos los registros en memoria y luego se aplicara la paginación: se consumiría mucha más memoria y aumentaría el tiempo de respuesta.
 
 En resumen, con el buen manejo de paginación, la base de datos filtrará y limitará los resultados antes de enviarlos a la aplicación.
+
+
+# Práctica 11 (Spring Boot): Autenticación JWT, Autorización por Roles y Protección de Endpoints
+
+## Capturas:
+
+#### 1.- Captura de registro exitoso:
+
+![POST de registro en AUTH](assets/11-register.png)
+
+
+#### 2.- Captura de login exitoso:
+
+![POST de login en AUTH](assets/11-register.png)
+
+
+#### 3.- Captura de endpoint protegido sin token:
+
+![Error 401 en GET products sin Token](assets/11-endpoint-noToken.png)
+
+
+#### 4.- Captura de endpoint protegido con token:
+
+![Consulta exitosa en products con Token](assets/11-endpoint-Token.png)
