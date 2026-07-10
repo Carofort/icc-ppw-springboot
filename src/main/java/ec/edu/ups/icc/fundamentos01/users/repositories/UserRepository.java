@@ -15,7 +15,7 @@ import ec.edu.ups.icc.fundamentos01.users.entities.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByEmail(String email);
-    
+
     Optional<UserEntity> findByIdAndDeletedFalse(Long id);
 
     Optional<UserEntity> findByIdAndDeleted(Long id, boolean deleted);
@@ -27,8 +27,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findById(Long id);
 
     Optional<UserEntity> findByEmailAndDeletedFalse(String email);
-    
+
     // Verificar si email ya está registrado (usado en registro)
     boolean existsByEmail(String email);
-    
+
 }

@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -65,25 +68,6 @@ public class GlobalExceptionHandler {
         }
 
         /*
-         * Maneja errores inesperados.
-         *
-         * Evita exponer stack traces o mensajes técnicos al cliente.
-         */
-        @ExceptionHandler(Exception.class)
-        public ResponseEntity<ErrorResponse> handleUnexpectedException(
-                        Exception ex,
-                        HttpServletRequest request) {
-                ErrorResponse response = new ErrorResponse(
-                                HttpStatus.INTERNAL_SERVER_ERROR,
-                                "Error interno del servidor",
-                                request.getRequestURI());
-
-                return ResponseEntity
-                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(response);
-        }
-
-        /*
          * Maneja errores de validación en query params
          * recibidos mediante @ModelAttribute.
          */
@@ -105,6 +89,97 @@ public class GlobalExceptionHandler {
 
                 return ResponseEntity
                                 .badRequest()
+                                .body(response);
+        }
+
+        /*
+         * Maneja errores de autorización generados por @PreAuthorize.
+         *
+         * Ocurre cuando el usuario está autenticado,
+         * pero no tiene el rol necesario.
+         *
+         * Ejemplo:
+         * ROLE_USER intenta consumir un endpoint con hasRole('ADMIN').
+         */
+        @ExceptionHandler(AuthorizationDeniedException.class)
+        public ResponseEntity<ErrorResponse> handleAuthorizationDeniedException(
+                        AuthorizationDeniedException ex,
+                        HttpServletRequest request) {
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.FORBIDDEN,
+                                "No tienes permisos para acceder a este recurso",
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.FORBIDDEN)
+                                .body(response);
+        }
+
+        /*
+         * Maneja errores de acceso denegado.
+         *
+         * Se usa cuando:
+         * - Un usuario autenticado no tiene permiso.
+         * - Un usuario intenta modificar un producto ajeno.
+         */
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<ErrorResponse> handleAccessDeniedException(
+                        AccessDeniedException ex,
+                        HttpServletRequest request) {
+                String message = ex.getMessage();
+
+                if (message == null || message.isBlank()) {
+                        message = "Acceso denegado";
+                }
+
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.FORBIDDEN,
+                                message,
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.FORBIDDEN)
+                                .body(response);
+        }
+
+        /*
+         * Maneja errores de autenticación producidos dentro del flujo
+         * de controladores o servicios, por ejemplo credenciales inválidas
+         * durante login.
+         *
+         * Los errores de token inválido o token ausente normalmente son
+         * manejados por JwtAuthenticationEntryPoint.
+         */
+        @ExceptionHandler(AuthenticationException.class)
+        public ResponseEntity<ErrorResponse> handleAuthenticationException(
+                        AuthenticationException ex,
+                        HttpServletRequest request) {
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.UNAUTHORIZED,
+                                "Credenciales inválidas o sesión expirada",
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.UNAUTHORIZED)
+                                .body(response);
+        }
+
+        /*
+         * Maneja errores inesperados.
+         *
+         * Evita exponer stack traces o mensajes técnicos al cliente.
+         */
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorResponse> handleUnexpectedException(
+                        Exception ex,
+                        HttpServletRequest request) {
+                ErrorResponse response = new ErrorResponse(
+                                HttpStatus.INTERNAL_SERVER_ERROR,
+                                "Error interno del servidor",
+                                request.getRequestURI());
+
+                return ResponseEntity
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(response);
         }
 }

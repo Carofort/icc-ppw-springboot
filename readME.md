@@ -209,3 +209,77 @@ En resumen, con el buen manejo de paginación, la base de datos filtrará y limi
 #### 4.- Captura de endpoint protegido con token:
 
 ![Consulta exitosa en products con Token](assets/11-endpoint-Token.png)
+
+
+# Práctica 12 (Spring Boot): Protección de Endpoints con Roles
+
+## Capturas:
+
+#### 1.- Captura de usuario autenticado:
+
+![Consumo endpoint me](assets/12-endpoint-me.png)
+
+#### 2.- Captura de acceso denegado por rol:
+
+![Error de consumo productos por user](assets/12-products-user.png)
+
+
+#### 3.- Captura de acceso permitido por rol ADMIN:
+
+![Consumo productos por admin](assets/12-products-admin.png)
+
+#### 4.- Responder:
+
+- **¿Cuál es la diferencia entre autenticación y autorización?**
+
+La autenticación verifica la identidad del usuario, mientras que la autorización determina qué acciones puede realizar ese usuario una vez autenticado.
+
+
+- **¿Por qué GET /api/products debe ser solo para ADMIN, mientras GET /api/products/page puede ser consumido por cualquier usuario autenticado?**
+
+Porque ```GET /api/products``` devuelve todos los productos sin paginación, lo que puede generar un alto consumo de recursos del servidor. Por ello se restringe a administradores.
+
+Al contrario, ```GET /api/products/page``` devuelve únicamente una parte de los datos mediante paginación, limitando la cantidad de registros enviados en cada solicitud. 
+
+# Práctica 13 (Spring Boot): Validación de Propiedad de Recursos
+
+## Capturas:
+
+#### 1.- Captura de creación de producto con usuario autenticado:
+
+![POST products de User A](assets/13-product-userA.png)
+
+#### 2.- Captura de bloqueo por producto ajeno:
+
+![Error bloqueo](assets/13-products-userB.png)
+
+#### 3.- Captura de eliminación de producto ajeno bloqueada:
+
+![Error delete products](assets/13-delete.png)
+
+#### 4.- Captura de ADMIN modificando producto ajeno:
+
+![ADMIN modifica productos](assets/13-products-admin.png)
+
+#### 5.- Captura de ```/slice```:
+
+![Consumo de slice de User A](assets/13-slice.png)
+
+#### 6.- Captura de ```/page```:
+
+![CConsumo de page](assets/13-page.png)
+
+#### 7.- Responder:
+
+
+- **¿Qué es ownership?**
+
+Ownership determina qué producto le pertenece a tal usuario en específico y solo usuarios con el rol de ADMIN podrán hacer las modificaciones (a parte del dueño orginial).
+
+- **¿Por qué no es seguro recibir userId en CreateProductDto?**
+
+Porque el cliente podría modificar el userId y crear un producto a nombre de otro usuario. 
+
+- **¿Cuál es la diferencia entre autorización por rol y autorización por ownership?**
+
+La autorización por rol controla qué acciones puede realizar un usuario según su rol. En cambio, la autorización por ownership verifica si el recurso pertenece al usuario autenticado antes de permitir una acción. 
