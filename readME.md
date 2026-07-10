@@ -100,6 +100,19 @@ La función principal es crear un Backend más sencillo sin necesidad de instala
 ![Validacion PATCH en Bruno](assets/06-patch-invalido.png)
 
 
+# Práctica 7 (Spring Boot): Manejo Global de Errores y Excepciones
+
+## Evidencias:
+
+#### 1.- Captura de error por producto inexistente:
+
+![Error de producto no existente](assets/07-inexistente.png)
+
+#### 2.- Captura de error por validación de DTO:
+
+![Error de validación DTO](assets/07-badRequest.png)
+
+
 # Práctica 8 (Spring Boot): Relaciones ManyToOne, Foreign Keys y Consultas Relacionales
 
 ## Captura:
