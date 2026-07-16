@@ -74,6 +74,7 @@ public class SecurityConfig {
                         // Endpoints públicos
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/status/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         // Endpoints por rol
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

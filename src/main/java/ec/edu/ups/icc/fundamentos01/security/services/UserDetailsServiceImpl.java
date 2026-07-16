@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
          * 
          * Nota: Los roles se cargan automáticamente por FetchType.EAGER
          */
-        UserEntity user = userRepository.findByEmail(email)
+        UserEntity user = userRepository.findByEmailAndDeletedFalse(email)
                 /**
                  * .orElseThrow(): Si Optional está vacío, lanza excepción
                  */

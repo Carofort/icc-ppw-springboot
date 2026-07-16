@@ -11,6 +11,8 @@ public class AuthResponseDto {
 
     private String token;
 
+    private String refreshToken;
+
     private String type = "Bearer";
 
     private Long userId;
@@ -21,21 +23,25 @@ public class AuthResponseDto {
 
     private Set<String> roles;
 
+
     public AuthResponseDto() {
     }
 
     public AuthResponseDto(
             String token,
+            String refreshToken,
             Long userId,
             String name,
             String email,
             Set<String> roles
+            
     ) {
         this.token = token;
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.roles = roles;
+        this.refreshToken = refreshToken;
     }
 
     // Getters y setters
@@ -86,6 +92,14 @@ public class AuthResponseDto {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
 }

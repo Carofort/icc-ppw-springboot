@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 /*
  * DTO usado para recibir credenciales de login.
  */
+
 public class LoginRequestDto {
 
     @NotBlank(message = "El email es obligatorio")

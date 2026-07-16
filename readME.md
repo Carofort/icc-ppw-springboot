@@ -296,3 +296,56 @@ Porque el cliente podría modificar el userId y crear un producto a nombre de ot
 - **¿Cuál es la diferencia entre autorización por rol y autorización por ownership?**
 
 La autorización por rol controla qué acciones puede realizar un usuario según su rol. En cambio, la autorización por ownership verifica si el recurso pertenece al usuario autenticado antes de permitir una acción. 
+
+# Práctica 14 (Spring Boot): Renovación de Access Token con Refresh Token
+
+## Capturas:
+
+#### 1.- Captura de login con refresh token:
+
+![POST login mostrando refresh token](assets/15-login-refresh.png)
+
+#### 2.- Captura de refresh exitoso:
+
+![POST refresh exitoso](assets/15-refresh.png)
+
+
+#### 3.- Captura de logout:
+
+![POST logout exitoso](assets/15-logout.png)
+
+
+#### 4.- Captura de refresh después de logout:
+
+![POST refresh después de logout](assets/15-refresh-logout.png)
+
+#### 5.- Responder:
+
+
+- **¿Cuál es la diferencia entre access token y refresh token?**
+
+El *access token* es el que se envía en cada petición al servidor dentro de Authorization: Bearer. Autoriza el acceso a los recursos protegidos y tiene una vida útil corta. Por otro lado, el *refresh token* sirve para obtener nuevos *access tokens* cuando estos expiran. Su duración es más larga y no se transmite en cada petición.
+
+
+- **¿Por qué el refresh token no debe usarse en Authorization: Bearer?**
+
+Porque ese está diseñado para access tokens que son seguros de enviar en cada request. Si se enviara el refresh token constantemente, aumentaría el riesgo de exposición. Por eso el refresh token solo se utiliza en el endpoint, nunca en llamadas normales a la API.
+
+
+- **¿Qué significa rotar un refresh token?**
+
+Significa que cada vez que el usuario lo utiliza para solicitar un nuevo access token, el servidor invalida el refresh token anterior y entrega uno nuevo.
+
+
+# Práctica en Clase Swagger UI
+
+## Capturas:
+
+#### Tags en Productos:
+
+![Products con Tags](assets/swagger-products.png)
+
+#### Scheme en DTO:
+
+![DTO con Scheme](assets/swagger-scheme.png)
+

@@ -1,5 +1,7 @@
 package ec.edu.ups.icc.fundamentos01.products.dtos;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -12,18 +14,23 @@ import jakarta.validation.constraints.Size;
  * Ejemplo:
  * /api/users/1/products?name=laptop&minPrice=500&maxPrice=1500&categoryId=2
  */
+@Schema(description = "Filtros utilizados para buscar productos de un usuario")
 public class ProductFilterByUserDto {
 
     @Size(min = 2, max = 150, message = "El nombre debe tener entre 2 y 150 caracteres")
+    @Schema(description = "Nombre del producto a buscar", example = "Laptop")
     private String name;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "El precio mínimo no puede ser negativo")
+    @Schema(description = "Precio mínimo del producto", example = "500.0")
     private Double minPrice;
 
     @DecimalMin(value = "0.0", inclusive = true, message = "El precio máximo no puede ser negativo")
+    @Schema(description = "Precio máximo del producto", example = "1500.0")
     private Double maxPrice;
 
     @Min(value = 1, message = "El ID de usuario debe ser mayor a 0")
+    @Schema(description = "ID del usuario dueño de los productos", example = "1")
     private Long userId;
 
     /*
